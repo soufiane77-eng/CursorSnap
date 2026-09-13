@@ -1,0 +1,44 @@
+/* ===== Surlignage de l'élément survolé ===== */
+.ci-highlight {
+  outline: 2px solid #ff4757 !important;
+  outline-offset: -2px !important;
+}
+
+/* ===== Toast de confirmation de copie ===== */
+.ci-toast {
+  position: fixed;
+  z-index: 2147483647;
+  background: #2ecc71;
+  color: #0b1f14;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  user-select: none;
+}
+
+.ci-toast.err {
+  background: #e74c3c;
+  color: #ffffff;
+}
+
+/* ===== Badge d'arrêt ===== */
+.ci-stopped {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 2147483647;
+  background: #181825;
+  color: #cdd6f4;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #313244;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  user-select: none;
+}

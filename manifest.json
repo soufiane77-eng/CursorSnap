@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Cursor Inspector",
+  "version": "1.0.0",
+  "description": "Détecte l'élément précis sous le curseur et copie ses données (sélecteur CSS + positions) en JSON.",
+  "permissions": ["clipboardWrite", "activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Cursor Inspector"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

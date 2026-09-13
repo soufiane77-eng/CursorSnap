@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 180px;
+      margin: 0;
+      padding: 16px;
+      background: #181825;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .btn-start {
+      width: 100%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      background: #2ecc71;
+      color: #0b1f14;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-start:hover { background: #3ddc84; }
+
+    .btn-start:active { transform: scale(0.98); }
+
+    .btn-stop-hint {
+      width: 100%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      background: #e74c3c;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 10px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #cdd6f4;
+      text-align: center;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn-start" id="start-btn">Start</button>
+  <div class="btn-stop-hint">ESC POUR STOPPER</div>
+  <div class="status" id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
