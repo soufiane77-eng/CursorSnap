@@ -1,5 +1,9 @@
 # Cursor Inspector
 
+![Capture 1](p1.png)
+
+![Capture 2](p2.png)
+
 Chrome extension that detects the exact element under the cursor, captures its position and the cursor's position, and copies this data as JSON in one click.
 
 ## Benefits for AI agents
