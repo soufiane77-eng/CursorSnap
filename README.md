@@ -15,7 +15,7 @@ The copied JSON is designed to be given directly to an AI assistant:
 
 <span style="color:red; font-weight:800;">Example of a dialogue with an AI agent:</span>
 
-> **User**: `{ "selector": "body > div:nth-of-type(1) > button:nth-of-type(2)", "cursor": { "x": 214, "y": 219 }, "element": { "top": 192, "left": 155, "width": 85, "height": 35 } }` place this element to the right
+> **User**: `{ "selector": "body > div:nth-of-type(1) > button:nth-of-type(2)", "cursor": { "x": 214, "y": 219 }, "element": { "top": 192, "left": 155, "width": 85, "height": 35 } }` <span style="color:red; font-weight:800;">place this element to the right</span>
 >
 > **AI agent**: `document.querySelector('body > div:nth-of-type(1) > button:nth-of-type(2)').style.marginLeft = '200px';`
 
