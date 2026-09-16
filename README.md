@@ -1,7 +1,3 @@
-
-
-https://github.com/user-attachments/assets/52f44572-b044-4b56-ac3f-6de5652d945d
-
 # Cursor Inspector
 
 <video src="https://github.com/user-attachments/assets/52f44572-b044-4b56-ac3f-6de5652d945d" controls width="100%"></video>
