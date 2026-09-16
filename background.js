@@ -32,9 +32,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 async function saveJson(id, json) {
   hideDownloadUi();
-  // 1. Stockage local (utilisé par l'historique du popup)
-  await chrome.storage.local.set({ [id]: json });
-  // 2. Fichier sur disque : ~/Downloads/cursor-inspector/<id>.json
+  // Fichier sur disque : ~/Downloads/cursor-inspector/<id>.json
   const url = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
   await chrome.downloads.download({
     url: url,
