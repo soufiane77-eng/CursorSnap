@@ -32,7 +32,7 @@ If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross
 - **Hover**: the element under the cursor is outlined in red
 - **Click or Enter**: a short ID (e.g. `ci-20260916-214530-a3f2`) is copied to the clipboard, the full JSON is saved to `~/Downloads/cursor-inspector/<id>.json`, with a confirmation toast
 - **Esc**: stops or restarts the extension
-- **Popup**: green Start button to start detection, plus a history of the last saved JSONs (with a "Copy" button to retrieve the full JSON)
+- **Popup**: green Start button to start detection
 
 ## Installation
 
