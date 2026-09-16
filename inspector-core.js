@@ -167,7 +167,81 @@
     };
   }
 
-  function getDomContext() {}
+  function getShadowContext(el) {
+    const ShadowRootCtor = typeof ShadowRoot !== 'undefined' ? ShadowRoot : null;
+    const root = el.getRootNode();
+    if (!ShadowRootCtor || !(root instanceof ShadowRootCtor)) {
+      return { inShadowRoot: false, hostSelector: null };
+    }
+    const hosts = [];
+    let node = el;
+    while (node) {
+      const r = node.getRootNode();
+      if (r instanceof ShadowRootCtor) {
+        hosts.unshift({
+          hostSelector: getSelectors(r.host).css,
+          hostTag: r.host.tagName.toLowerCase(),
+        });
+        node = r.host;
+      } else {
+        break;
+      }
+    }
+    return {
+      inShadowRoot: true,
+      hostSelector: hosts.length ? hosts[0].hostSelector : null,
+      hosts: hosts,
+    };
+  }
+
+  function getFrameContext() {
+    try {
+      if (window === window.top) {
+        return { isTop: true, selector: null };
+      }
+      const iframes = window.top.document.querySelectorAll('iframe, frame');
+      for (const iframe of iframes) {
+        if (iframe.contentWindow === window) {
+          return { isTop: false, selector: getSelectors(iframe).css };
+        }
+      }
+      return { isTop: false, selector: null };
+    } catch (e) {
+      return { isTop: false, selector: null };
+    }
+  }
+
+  function getDomContext(el) {
+    const chain = [];
+    let node = el.parentElement;
+    while (node && node !== document.documentElement) {
+      chain.push({
+        tag: node.tagName.toLowerCase(),
+        id: node.id || null,
+        classes: Array.from(node.classList),
+      });
+      node = node.parentElement;
+    }
+    const ancestors = chain.reverse();
+    const parent = el.parentElement;
+    const siblings = parent ? Array.from(parent.children) : [el];
+    const index = siblings.indexOf(el);
+    let depth = 0;
+    node = el;
+    while (node && node !== document.documentElement) {
+      depth++;
+      node = node.parentElement;
+    }
+    return {
+      depth: depth,
+      index: index,
+      siblings: siblings.length,
+      ancestors: ancestors,
+      shadow: getShadowContext(el),
+      frame: getFrameContext(),
+    };
+  }
+
   function getVisualSignature() {}
   function deepElementFromPoint() {}
   function buildData() {}

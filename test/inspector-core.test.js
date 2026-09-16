@@ -32,6 +32,7 @@ beforeEach(() => {
   global.window = dom.window;
   global.document = dom.window.document;
   global.CSS = dom.window.CSS;
+  global.ShadowRoot = dom.window.ShadowRoot;
   core = require('../inspector-core.js');
 });
 
@@ -129,4 +130,37 @@ test('getElementFingerprint: valeur des champs de formulaire (hors mot de passe)
   document.body.appendChild(pwd);
   const f2 = core.getElementFingerprint(pwd);
   assert.strictEqual(f2.value, null);
+});
+
+test('getDomContext: profondeur, index, ancêtres', () => {
+  const el = document.getElementById('btn-submit');
+  const d = core.getDomContext(el);
+  assert.strictEqual(d.depth, 3);
+  assert.strictEqual(d.index, 1); // 2e enfant de .card (après le h2)
+  assert.strictEqual(d.siblings, 3); // h2 + 2 boutons
+  assert.deepStrictEqual(d.ancestors, [
+    { tag: 'body', id: null, classes: [] },
+    { tag: 'div', id: null, classes: ['card'] },
+  ]);
+  assert.strictEqual(d.shadow.inShadowRoot, false);
+  assert.strictEqual(d.shadow.hostSelector, null);
+  assert.strictEqual(d.frame.isTop, true);
+  assert.strictEqual(d.frame.selector, null);
+});
+
+test('getDomContext: élément dans un shadow root', () => {
+  const host = document.createElement('div');
+  host.id = 'host';
+  document.body.appendChild(host);
+  const shadow = host.attachShadow({ mode: 'open' });
+  const inner = document.createElement('button');
+  inner.id = 'inner';
+  shadow.appendChild(inner);
+
+  const d = core.getDomContext(inner);
+  assert.strictEqual(d.shadow.inShadowRoot, true);
+  assert.strictEqual(d.shadow.hostSelector, '#host');
+  assert.strictEqual(d.shadow.hosts.length, 1);
+  assert.strictEqual(d.shadow.hosts[0].hostTag, 'div');
+  assert.strictEqual(d.shadow.hosts[0].hostSelector, '#host');
 });
