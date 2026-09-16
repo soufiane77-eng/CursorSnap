@@ -112,10 +112,10 @@ cursor-inspector-extension/
 ├── manifest.json      → Manifest V3, content_scripts on all pages + iframes
 ├── inspector-core.js  → pure functions: selectors, fingerprint, DOM context, visual signature
 ├── content.js         → event wiring, highlighting, ID copy
-├── background.js      → service worker: saves the JSON to chrome.storage.local + Downloads
+├── background.js      → service worker: saves the JSON to Downloads (silently)
 ├── styles.css         → styles for the highlight, the toast, the hint and the badge
-├── popup.html         → popup interface (Start button + history)
-├── popup.js           → sends the Start message, lists saved JSONs
+├── popup.html         → popup interface (Start button)
+├── popup.js           → sends the Start message to the content script
 ├── test.html          → test page (shadow DOM, iframe, duplicates, rich attributes)
 ├── test/              → Node tests (jsdom)
 └── package.json       → npm test (jsdom devDependency)
