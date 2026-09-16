@@ -93,13 +93,23 @@
     hideHint();
     const hint = document.createElement('div');
     hint.className = 'ci-hint';
-    hint.textContent = 'Click ou ENTRER pour copier le JSON';
+    hint.textContent = 'Click ou ENTRER pour copier l\'ID';
     document.documentElement.appendChild(hint);
   }
 
   function hideHint() {
     const hint = document.querySelector('.ci-hint');
     if (hint) hint.remove();
+  }
+
+  // ===== ID court =====
+  function generateId() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const date = '' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate());
+    const time = pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    const rand = Math.random().toString(16).slice(2, 6);
+    return 'ci-' + date + '-' + time + '-' + rand;
   }
 
   // ===== Capture + copie (partagé clic / ENTRER) =====
@@ -110,10 +120,27 @@
     clearHighlight();
     const data = buildData(el, x, y);
     const json = JSON.stringify(data, null, 2);
-    copyText(json).then((ok) => {
-      showToast(ok ? 'JSON copié !' : 'Erreur de copie', ok, x, y);
-      // Arrêt automatique après la copie : le contour rouge disparaît.
-      stop();
+    const id = generateId();
+    // Sauvegarde via le service worker, puis copie de l'ID court.
+    chrome.runtime.sendMessage({ action: 'save', id: id, json: json }).then((res) => {
+      if (res && res.ok) {
+        copyText(id).then((copied) => {
+          showToast(copied ? 'ID copié : ' + id : 'Erreur de copie', copied, x, y);
+          stop();
+        });
+      } else {
+        // Sauvegarde impossible : on copie le JSON complet en secours.
+        copyText(json).then((copied) => {
+          showToast(copied ? 'JSON copié (sans sauvegarde)' : 'Erreur de copie', copied, x, y);
+          stop();
+        });
+      }
+    }).catch(() => {
+      // Pas de service worker (ancienne version) : JSON complet en secours.
+      copyText(json).then((copied) => {
+        showToast(copied ? 'JSON copié !' : 'Erreur de copie', copied, x, y);
+        stop();
+      });
     });
   }
 

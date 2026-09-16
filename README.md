@@ -30,9 +30,9 @@ If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross
 ## Features
 
 - **Hover**: the element under the cursor is outlined in red
-- **Click**: the JSON is automatically copied to the clipboard (unique CSS selector + cursor and element positions), with a confirmation toast
+- **Click or Enter**: a short ID (e.g. `ci-20260916-214530-a3f2`) is copied to the clipboard, the full JSON is saved to `~/Downloads/cursor-inspector/<id>.json`, with a confirmation toast
 - **Esc**: stops or restarts the extension
-- **Popup**: green Start button to start detection
+- **Popup**: green Start button to start detection, plus a history of the last saved JSONs (with a "Copy" button to retrieve the full JSON)
 
 ## Installation
 
@@ -48,8 +48,14 @@ If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross
 2. Click on the extension icon in the toolbar
 3. Click the green **Start** button
 4. Hover over elements: the red outline follows the cursor
-5. Click on an element: the JSON is copied, a green "JSON copied!" toast appears
-6. Paste the JSON into an editor:
+5. Click on an element (or press **Enter**): a short ID is copied, the full JSON is saved to `~/Downloads/cursor-inspector/<id>.json`, a toast confirms it
+6. Paste the ID into an AI agent (e.g. opencode) and tell it once where the files live:
+
+> **User**: `ci-20260916-214530-a3f2` — the element data is in `~/Downloads/cursor-inspector/ci-20260916-214530-a3f2.json`
+>
+> **AI agent**: reads the file and identifies the element exactly.
+
+The saved JSON looks like this:
 
 ```json
 {
@@ -96,6 +102,7 @@ If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross
 ```
 
 7. Press **Esc** to stop the extension, **Esc** again to restart it
+8. To retrieve a full JSON later: open the popup → **Historique** → **Copier
 
 
 
@@ -105,10 +112,11 @@ If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross
 cursor-inspector-extension/
 ├── manifest.json      → Manifest V3, content_scripts on all pages + iframes
 ├── inspector-core.js  → pure functions: selectors, fingerprint, DOM context, visual signature
-├── content.js         → event wiring, highlighting, JSON copy
-├── styles.css         → styles for the highlight, the toast and the badge
-├── popup.html         → popup interface (Start button)
-├── popup.js           → sends the Start message to the content script
+├── content.js         → event wiring, highlighting, ID copy
+├── background.js      → service worker: saves the JSON to chrome.storage.local + Downloads
+├── styles.css         → styles for the highlight, the toast, the hint and the badge
+├── popup.html         → popup interface (Start button + history)
+├── popup.js           → sends the Start message, lists saved JSONs
 ├── test.html          → test page (shadow DOM, iframe, duplicates, rich attributes)
 ├── test/              → Node tests (jsdom)
 └── package.json       → npm test (jsdom devDependency)
@@ -118,4 +126,5 @@ cursor-inspector-extension/
 
 - No build, no runtime dependency, Vanilla JavaScript (jsdom is only a devDependency for tests)
 - Run tests: `npm install` then `npm test`
-- The copied JSON can be given to an AI assistant to move an element (e.g.: "move this element to this position")
+- The full JSON is saved to `~/Downloads/cursor-inspector/<id>.json`; the clipboard only receives the short ID, so pasting into an AI agent does not flood its context
+- If saving fails, the extension falls back to copying the full JSON

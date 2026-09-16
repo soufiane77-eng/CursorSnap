@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <style>
     body {
-      width: 180px;
+      width: 280px;
       margin: 0;
       padding: 16px;
       background: #181825;
@@ -49,12 +49,74 @@
       text-align: center;
       min-height: 16px;
     }
+
+    .history {
+      margin-top: 14px;
+      border-top: 1px solid #313244;
+      padding-top: 10px;
+    }
+
+    .history-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #a6adc8;
+      margin-bottom: 8px;
+    }
+
+    .history-list {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: #1e1e2e;
+      margin-bottom: 6px;
+    }
+
+    .history-row span {
+      font-size: 11px;
+      color: #cdd6f4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-copy {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 6px;
+      background: #89b4fa;
+      color: #11111b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .history-copy:hover { background: #b4befe; }
+
+    .history-empty {
+      font-size: 11px;
+      color: #6c7086;
+      text-align: center;
+      padding: 8px 0;
+    }
   </style>
 </head>
 <body>
   <button class="btn-start" id="start-btn">Start</button>
   <div class="btn-stop-hint">ESC POUR STOPPER</div>
   <div class="status" id="status"></div>
+  <div class="history">
+    <div class="history-title">Historique (JSON sauvegardés)</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

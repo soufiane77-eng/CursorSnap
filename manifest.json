@@ -1,9 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Cursor Inspector",
-  "version": "2.0.0",
-  "description": "Détecte l'élément précis sous le curseur et copie ses données (sélecteurs CSS + XPath, empreinte, contexte DOM) en JSON pour une IA.",
-  "permissions": ["clipboardWrite", "activeTab"],
+  "version": "2.1.0",
+  "description": "Détecte l'élément précis sous le curseur, copie un ID court et sauvegarde le JSON complet (sélecteurs, empreinte, contexte DOM) pour une IA.",
+  "permissions": ["clipboardWrite", "activeTab", "downloads", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "Cursor Inspector"
