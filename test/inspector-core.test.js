@@ -164,3 +164,22 @@ test('getDomContext: élément dans un shadow root', () => {
   assert.strictEqual(d.shadow.hosts[0].hostTag, 'div');
   assert.strictEqual(d.shadow.hosts[0].hostSelector, '#host');
 });
+
+test('getVisualSignature: rect, styles calculés, curseur', () => {
+  const el = document.getElementById('btn-submit');
+  const v = core.getVisualSignature(el, 100, 200);
+  assert.deepStrictEqual(Object.keys(v.rect).sort(), ['height', 'left', 'top', 'width']);
+  assert.strictEqual(typeof v.rect.top, 'number');
+  assert.strictEqual(typeof v.rect.left, 'number');
+  assert.strictEqual(typeof v.rect.width, 'number');
+  assert.strictEqual(typeof v.rect.height, 'number');
+  assert.strictEqual(typeof v.position, 'string');
+  assert.strictEqual(typeof v.visibility, 'string');
+  assert.strictEqual(typeof v.display, 'string');
+  assert.strictEqual(typeof v.color, 'string');
+  assert.strictEqual(typeof v.backgroundColor, 'string');
+  assert.strictEqual(typeof v.fontSize, 'string');
+  assert.strictEqual(typeof v.fontFamily, 'string');
+  assert.strictEqual(v.cursor.x, 100);
+  assert.strictEqual(v.cursor.y, 200);
+});

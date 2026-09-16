@@ -242,7 +242,28 @@
     };
   }
 
-  function getVisualSignature() {}
+  function getVisualSignature(el, x, y) {
+    const rect = el.getBoundingClientRect();
+    const cs = window.getComputedStyle(el);
+    return {
+      rect: {
+        top: Math.round(rect.top),
+        left: Math.round(rect.left),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      },
+      display: cs.display,
+      visibility: cs.visibility,
+      position: cs.position,
+      zIndex: cs.zIndex,
+      color: cs.color,
+      backgroundColor: cs.backgroundColor,
+      fontSize: cs.fontSize,
+      fontFamily: cs.fontFamily,
+      cursor: { x: Math.round(x), y: Math.round(y) },
+    };
+  }
+
   function deepElementFromPoint() {}
   function buildData() {}
 
