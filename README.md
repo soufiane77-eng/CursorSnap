@@ -102,7 +102,6 @@ The saved JSON looks like this:
 ```
 
 7. Press **Esc** to stop the extension, **Esc** again to restart it
-8. To retrieve a full JSON later: open the popup → **Historique** → **Copier
 
 
 
