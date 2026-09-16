@@ -8,10 +8,14 @@ Chrome extension that detects the exact element under the cursor, captures its p
 
 ## Benefits for AI agents
 
-The copied JSON is designed to be given directly to an AI assistant:
+The copied JSON is designed to be given directly to an AI assistant. It contains **4 independent signals** so the AI can identify the element exactly, even on dynamic pages, in shadow DOM, or inside iframes:
 
-- **Unique and verified CSS selector**: the agent targets the exact element without guessing, even with duplicated or nested elements
-- **Precise position**: `cursor` (cursor position) and `element` (top, left, width, height) give the agent the complete spatial context
+- **`selectors`**: unique and verified CSS selector (short + full path) and absolute XPath, with a confidence score
+- **`element`**: rich fingerprint — tag, id, classes, all attributes, text content, ARIA role, form fields
+- **`dom`**: DOM context — depth, index among siblings, ancestor chain, shadow DOM path, iframe path
+- **`visual`**: visual signature — bounding rect, computed styles (display, position, colors, font), cursor position
+
+If one signal fails (e.g. a selector breaks on a dynamic page), the AI can cross-check with the others.
 
 <span style="color:red; font-weight:800;">Example of a dialogue with an AI agent:</span>
 
@@ -49,9 +53,45 @@ The copied JSON is designed to be given directly to an AI assistant:
 
 ```json
 {
-  "selector": "body > div:nth-of-type(1) > button:nth-of-type(2)",
-  "cursor": { "x": 214, "y": 219 },
-  "element": { "top": 192, "left": 155, "width": 85, "height": 35 }
+  "selectors": {
+    "css": "body > div.card:nth-of-type(1) > button.btn:nth-of-type(2)",
+    "cssShort": "#btn-submit",
+    "xpath": "/html/body/div[1]/button[2]",
+    "unique": true,
+    "confidence": 0.95
+  },
+  "element": {
+    "tag": "button",
+    "id": "btn-submit",
+    "classes": ["btn"],
+    "attributes": { "type": "submit", "name": "submit", "data-action": "save" },
+    "text": "Enregistrer",
+    "role": "button",
+    "ariaLabel": "Enregistrer les modifications",
+    "name": "submit",
+    "href": null, "src": null, "placeholder": null,
+    "value": null, "alt": null, "title": null
+  },
+  "dom": {
+    "depth": 4,
+    "index": 1,
+    "siblings": 3,
+    "ancestors": [
+      { "tag": "body", "id": null, "classes": [] },
+      { "tag": "div", "id": null, "classes": ["card"] },
+      { "tag": "form", "id": null, "classes": [] }
+    ],
+    "shadow": { "inShadowRoot": false, "hostSelector": null },
+    "frame": { "isTop": true, "selector": null }
+  },
+  "visual": {
+    "rect": { "top": 192, "left": 155, "width": 85, "height": 35 },
+    "display": "inline-block", "visibility": "visible", "position": "static",
+    "zIndex": "auto", "color": "rgb(255,255,255)",
+    "backgroundColor": "rgb(46,204,113)", "fontSize": "14px",
+    "fontFamily": "Arial, sans-serif",
+    "cursor": { "x": 214, "y": 219 }
+  }
 }
 ```
 
@@ -63,16 +103,19 @@ The copied JSON is designed to be given directly to an AI assistant:
 
 ```
 cursor-inspector-extension/
-├── manifest.json   → Manifest V3, content_scripts on all pages
-├── content.js      → detection logic, highlighting, JSON copy
-├── styles.css      → styles for the highlight, the toast and the badge
-├── popup.html      → popup interface (Start button)
-├── popup.js        → sends the Start message to the content script
-├── test.html       → simple test page
-└── coiffeur.html   → complete test page
+├── manifest.json      → Manifest V3, content_scripts on all pages + iframes
+├── inspector-core.js  → pure functions: selectors, fingerprint, DOM context, visual signature
+├── content.js         → event wiring, highlighting, JSON copy
+├── styles.css         → styles for the highlight, the toast and the badge
+├── popup.html         → popup interface (Start button)
+├── popup.js           → sends the Start message to the content script
+├── test.html          → test page (shadow DOM, iframe, duplicates, rich attributes)
+├── test/              → Node tests (jsdom)
+└── package.json       → npm test (jsdom devDependency)
 ```
 
 ## Notes
 
-- No build, no dependency, Vanilla JavaScript
+- No build, no runtime dependency, Vanilla JavaScript (jsdom is only a devDependency for tests)
+- Run tests: `npm install` then `npm test`
 - The copied JSON can be given to an AI assistant to move an element (e.g.: "move this element to this position")
