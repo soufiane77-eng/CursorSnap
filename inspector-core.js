@@ -136,7 +136,37 @@
     return { css: css, cssShort: cssShort, xpath: xpath, unique: unique, confidence: confidence };
   }
 
-  function getElementFingerprint() {}
+  function cleanText(text) {
+    if (!text) return '';
+    const cleaned = text.replace(/\s+/g, ' ').trim();
+    return cleaned.length > 200 ? cleaned.slice(0, 200) + '…' : cleaned;
+  }
+
+  function getElementFingerprint(el) {
+    const attributes = {};
+    for (const attr of el.attributes) {
+      attributes[attr.name] = attr.value;
+    }
+    const isFormControl = /^(input|textarea|select)$/i.test(el.tagName);
+    const isPassword = el.type === 'password';
+    return {
+      tag: el.tagName.toLowerCase(),
+      id: el.id || null,
+      classes: Array.from(el.classList),
+      attributes: attributes,
+      text: cleanText(el.textContent),
+      role: el.getAttribute('role'),
+      ariaLabel: el.getAttribute('aria-label') || el.getAttribute('aria-labelledby'),
+      name: el.getAttribute('name'),
+      href: el.getAttribute('href'),
+      src: el.getAttribute('src'),
+      placeholder: el.getAttribute('placeholder'),
+      value: isFormControl && !isPassword ? (el.value ?? null) : null,
+      alt: el.getAttribute('alt'),
+      title: el.getAttribute('title'),
+    };
+  }
+
   function getDomContext() {}
   function getVisualSignature() {}
   function deepElementFromPoint() {}

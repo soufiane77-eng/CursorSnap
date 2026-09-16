@@ -80,3 +80,53 @@ test('getSelectors: id dupliqué → unique false, confiance 0.5', () => {
   assert.strictEqual(s.confidence, 0.5);
   assert.strictEqual(s.xpath, '/html/body/div[5]/button[1]');
 });
+
+test('getElementFingerprint: attributs, texte, ARIA', () => {
+  const el = document.getElementById('btn-submit');
+  const f = core.getElementFingerprint(el);
+  assert.strictEqual(f.tag, 'button');
+  assert.strictEqual(f.id, 'btn-submit');
+  assert.deepStrictEqual(f.classes, ['btn']);
+  assert.strictEqual(f.attributes.type, 'submit');
+  assert.strictEqual(f.attributes['data-action'], 'save');
+  assert.strictEqual(f.text, 'Enregistrer');
+  assert.strictEqual(f.role, null);
+  assert.strictEqual(f.name, 'submit');
+  assert.strictEqual(f.href, null);
+  assert.strictEqual(f.src, null);
+  assert.strictEqual(f.placeholder, null);
+  assert.strictEqual(f.value, null);
+  assert.strictEqual(f.alt, null);
+  assert.strictEqual(f.title, null);
+});
+
+test('getElementFingerprint: texte nettoyé et tronqué à 200 caractères', () => {
+  const el = document.createElement('div');
+  el.textContent = '  a   b   c  ';
+  document.body.appendChild(el);
+  const f = core.getElementFingerprint(el);
+  assert.strictEqual(f.text, 'a b c');
+
+  const long = document.createElement('div');
+  long.textContent = 'x'.repeat(300);
+  document.body.appendChild(long);
+  const f2 = core.getElementFingerprint(long);
+  assert.strictEqual(f2.text.length, 201); // 200 + '…'
+  assert.ok(f2.text.endsWith('…'));
+});
+
+test('getElementFingerprint: valeur des champs de formulaire (hors mot de passe)', () => {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = 'hello';
+  document.body.appendChild(input);
+  const f = core.getElementFingerprint(input);
+  assert.strictEqual(f.value, 'hello');
+
+  const pwd = document.createElement('input');
+  pwd.type = 'password';
+  pwd.value = 'secret';
+  document.body.appendChild(pwd);
+  const f2 = core.getElementFingerprint(pwd);
+  assert.strictEqual(f2.value, null);
+});
