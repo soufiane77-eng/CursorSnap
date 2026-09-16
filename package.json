@@ -1,0 +1,12 @@
+{
+  "name": "cursor-inspector-extension",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Détecte l'élément précis sous le curseur et copie ses données en JSON pour une IA.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}
