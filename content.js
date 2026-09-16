@@ -102,9 +102,10 @@
     clearHighlight();
     const data = buildData(el, e.clientX, e.clientY);
     const json = JSON.stringify(data, null, 2);
-    setHighlight(el);
     copyText(json).then((ok) => {
       showToast(ok ? 'JSON copié !' : 'Erreur de copie', ok, e.clientX, e.clientY);
+      // Arrêt automatique après la copie : le contour rouge disparaît.
+      stop();
     });
   }
 

@@ -6,13 +6,29 @@
   <style>
     body { font-family: sans-serif; padding: 40px; }
     .card { border: 1px solid #ccc; padding: 16px; margin: 16px 0; }
+    /* Fond ajouté par l'IA : Carte 1 */
+    body > div.card:nth-of-type(1) {
+      background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRncZbyAIP3ifOnzuujKQn7seQc5fWLQYOum0JDw3zAAw&s');
+      background-size: cover;
+      background-position: center;
+    }
     .card h2 { margin-top: 0; }
     button { padding: 8px 14px; }
     #unique-element { background: #ffeaa7; padding: 12px; }
     .duplicate { background: #dfe6e9; padding: 8px; margin: 4px 0; }
     .shadow-box { border: 2px dashed #6c5ce7; padding: 16px; margin: 16px 0; }
+    /* Dimensions réduites par l'IA : conteneur shadow DOM */
+    #shadow-host { width: 400px; height: 80px; }
     iframe { border: 1px solid #ccc; width: 100%; height: 80px; margin: 16px 0; }
     label { display: block; margin: 8px 0; }
+    /* Fond ajouté par l'IA : champ mot de passe */
+    body > label:nth-of-type(2) > input:nth-of-type(1) {
+      background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRncZbyAIP3ifOnzuujKQn7seQc5fWLQYOum0JDw3zAAw&s');
+      background-size: cover;
+      background-position: center;
+    }
+    /* Déplacé à droite par l'IA : bouton "Annuler" de la Carte 1 */
+    body > div.card:nth-of-type(1) > button.btn:nth-of-type(2) { margin-left: 200px; }
   </style>
 </head>
 <body>
@@ -40,7 +56,10 @@
   <a href="https://example.com" title="Exemple" target="_blank">Lien exemple</a>
 
   <h2>Shadow DOM</h2>
-  <div class="shadow-box" id="shadow-host"></div>
+  <div style="display: flex; align-items: center; gap: 16px;">
+    <div class="shadow-box" id="shadow-host"></div>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbPahiZsBAUaHSB71BgPlHYJ-wOyUpnlG0vLvHuaUv2w&s=10" alt="Image à côté du shadow host" style="width: 436px; height: 116px; object-fit: cover;">
+  </div>
 
   <h2>Iframe</h2>
   <iframe srcdoc="<button id='frame-btn' style='padding:8px 14px;'>Bouton dans l'iframe</button><p>Contenu de l'iframe</p>"></iframe>
@@ -48,7 +67,7 @@
   <script>
     const host = document.getElementById('shadow-host');
     const shadow = host.attachShadow({ mode: 'open' });
-    shadow.innerHTML = '<button id="shadow-btn">Bouton shadow</button><p>Contenu du shadow root</p>';
+    shadow.innerHTML = '<button id="shadow-btn">Bouton shadow</button><p>soufiane</p>';
   </script>
 </body>
 </html>
