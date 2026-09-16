@@ -127,4 +127,5 @@ cursor-inspector-extension/
 - No build, no runtime dependency, Vanilla JavaScript (jsdom is only a devDependency for tests)
 - Run tests: `npm install` then `npm test`
 - The full JSON is saved to `~/Downloads/cursor-inspector/<id>.json`; the clipboard only receives the short ID, so pasting into an AI agent does not flood its context
+- Downloads are silent: the extension hides Chrome's download UI (`chrome.downloads.setUiOptions`). Note this hides the download UI for **all** downloads while the extension is enabled
 - If saving fails, the extension falls back to copying the full JSON
