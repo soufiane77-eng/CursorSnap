@@ -1,72 +1,31 @@
 (() => {
   'use strict';
 
+  const { buildData, deepElementFromPoint } = window.CursorInspectorCore;
+
+  // Hook de debug : expose les fonctions pures (tests + usage IA)
+  window.__cursorInspector = window.CursorInspectorCore;
+
   // ===== État =====
   let highlightEl = null;
   let stopped = false;
 
-  // ===== Génération du sélecteur CSS unique =====
-  function getUniqueSelector(el) {
-    if (el === document.body) return 'body';
-    if (el === document.documentElement) return 'html';
-
-    // 1. Un id unique suffit
-    if (el.id) {
-      const sel = '#' + CSS.escape(el.id);
-      if (document.querySelectorAll(sel).length === 1) return sel;
-    }
-
-    // 2. Chemin complet avec nth-of-type pour garantir l'unicité
-    const parts = [];
-    let node = el;
-    while (node && node !== document.documentElement) {
-      if (node === document.body) {
-        parts.unshift('body');
-        break;
-      }
-      let part = node.tagName.toLowerCase();
-      if (node.id) {
-        part = '#' + CSS.escape(node.id);
-        parts.unshift(part);
-        break;
-      }
-      const parent = node.parentElement;
-      if (parent) {
-        const sameTag = Array.from(parent.children).filter((s) => s.tagName === node.tagName);
-        const index = sameTag.indexOf(node) + 1;
-        part += ':nth-of-type(' + index + ')';
-      }
-      parts.unshift(part);
-      node = parent;
-    }
-
-    const selector = parts.join(' > ');
-    if (document.querySelectorAll(selector).length === 1) return selector;
-    return selector; // meilleur effort : le chemin complet reste utilisable
+  // ===== Surlignage (document + shadow roots) =====
+  function ensureHighlightStyle(root) {
+    if (root.querySelector('style.ci-highlight-style')) return;
+    const style = document.createElement('style');
+    style.className = 'ci-highlight-style';
+    style.textContent =
+      '.ci-highlight { outline: 2px solid #ff4757 !important; outline-offset: -2px !important; }';
+    root.appendChild(style);
   }
 
-  // ===== Construction des données =====
-  function buildData(el, x, y) {
-    const rect = el.getBoundingClientRect();
-    return {
-      selector: getUniqueSelector(el),
-      cursor: { x: Math.round(x), y: Math.round(y) },
-      element: {
-        top: Math.round(rect.top),
-        left: Math.round(rect.left),
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-      },
-    };
-  }
-
-  // ===== Surlignage =====
   function setHighlight(el) {
     clearHighlight();
-    if (el) {
-      el.classList.add('ci-highlight');
-      highlightEl = el;
-    }
+    if (!el) return;
+    ensureHighlightStyle(el.getRootNode());
+    el.classList.add('ci-highlight');
+    highlightEl = el;
   }
 
   function clearHighlight() {
@@ -82,7 +41,6 @@
       await navigator.clipboard.writeText(text);
       return true;
     } catch (err) {
-      // Fallback pour les contextes où l'API clipboard est refusée
       const ta = document.createElement('textarea');
       ta.value = text;
       ta.style.position = 'fixed';
@@ -128,13 +86,13 @@
 
   // ===== Événements =====
   function onMouseMove(e) {
-    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const el = deepElementFromPoint(e.clientX, e.clientY);
     if (!el) return;
     setHighlight(el);
   }
 
   function onClick(e) {
-    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const el = deepElementFromPoint(e.clientX, e.clientY);
     if (!el) return;
     const data = buildData(el, e.clientX, e.clientY);
     const json = JSON.stringify(data, null, 2);
@@ -177,7 +135,6 @@
   }
 
   // ===== Initialisation =====
-  // Démarre arrêté : la détection ne s'active qu'avec le bouton Start du popup
   stopped = true;
   document.addEventListener('keydown', onKeyDown);
   chrome.runtime.onMessage.addListener((msg) => {
