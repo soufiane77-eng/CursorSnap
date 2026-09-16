@@ -264,8 +264,24 @@
     };
   }
 
-  function deepElementFromPoint() {}
-  function buildData() {}
+  function deepElementFromPoint(x, y) {
+    let el = document.elementFromPoint(x, y);
+    while (el && el.shadowRoot) {
+      const inner = el.shadowRoot.elementFromPoint(x, y);
+      if (!inner || inner === el) break;
+      el = inner;
+    }
+    return el;
+  }
+
+  function buildData(el, x, y) {
+    return {
+      selectors: getSelectors(el),
+      element: getElementFingerprint(el),
+      dom: getDomContext(el),
+      visual: getVisualSignature(el, x, y),
+    };
+  }
 
   return {
     getSelectors: getSelectors,

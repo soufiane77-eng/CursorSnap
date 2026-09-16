@@ -183,3 +183,39 @@ test('getVisualSignature: rect, styles calculés, curseur', () => {
   assert.strictEqual(v.cursor.x, 100);
   assert.strictEqual(v.cursor.y, 200);
 });
+
+test('deepElementFromPoint: traverse les shadow roots', () => {
+  const host = document.createElement('div');
+  host.id = 'host';
+  document.body.appendChild(host);
+  const shadow = host.attachShadow({ mode: 'open' });
+  const inner = document.createElement('button');
+  inner.id = 'inner';
+  shadow.appendChild(inner);
+
+  const origDoc = document.elementFromPoint;
+  document.elementFromPoint = () => host;
+  shadow.elementFromPoint = () => inner;
+
+  const result = core.deepElementFromPoint(10, 10);
+  assert.strictEqual(result, inner);
+
+  // Si le shadow root renvoie le host lui-même, on s'arrête
+  shadow.elementFromPoint = () => host;
+  const result2 = core.deepElementFromPoint(10, 10);
+  assert.strictEqual(result2, host);
+
+  document.elementFromPoint = origDoc;
+});
+
+test('buildData: structure complète avec les 4 signaux', () => {
+  const el = document.getElementById('btn-submit');
+  const data = core.buildData(el, 100, 200);
+  assert.ok(data.selectors);
+  assert.ok(data.element);
+  assert.ok(data.dom);
+  assert.ok(data.visual);
+  assert.strictEqual(data.element.tag, 'button');
+  assert.strictEqual(data.selectors.confidence, 1.0);
+  assert.strictEqual(data.visual.cursor.x, 100);
+});
