@@ -1,5 +1,7 @@
 # Cursor Inspector
 
+<video src="position-extension.mp4" controls width="100%"></video>
+
 ![Capture 1](p1.png)
 
 ![Capture 2](p2.png)
