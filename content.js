@@ -12,12 +12,15 @@
 
   // ===== Surlignage (document + shadow roots) =====
   function ensureHighlightStyle(root) {
-    if (root.querySelector('style.ci-highlight-style')) return;
+    // Un document ne peut pas recevoir d'appendChild direct : on cible <head>.
+    const target = root === document ? document.head || document.documentElement : root;
+    if (!target) return;
+    if (target.querySelector('style.ci-highlight-style')) return;
     const style = document.createElement('style');
     style.className = 'ci-highlight-style';
     style.textContent =
       '.ci-highlight { outline: 2px solid #ff4757 !important; outline-offset: -2px !important; }';
-    root.appendChild(style);
+    target.appendChild(style);
   }
 
   function setHighlight(el) {
