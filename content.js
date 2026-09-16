@@ -97,6 +97,9 @@
   function onClick(e) {
     const el = deepElementFromPoint(e.clientX, e.clientY);
     if (!el) return;
+    // Retirer la classe de surlignage AVANT de capturer : elle polluerait
+    // l'empreinte et les sélecteurs (classes/attributs de l'élément).
+    clearHighlight();
     const data = buildData(el, e.clientX, e.clientY);
     const json = JSON.stringify(data, null, 2);
     setHighlight(el);
